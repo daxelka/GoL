@@ -1,29 +1,41 @@
 import numpy as np
+import networkx as nx
+import matplotlib.pyplot as plt
 
 class GoL:
     
-    def __init__(self, adj_matrix = None):        
+    def __init__(self, adj_matrix = None, graph = None, threshold_1=2, threshold_2=4):        
         self.A = adj_matrix
+        self.n_b = threshold_1
+        self.n_d = threshold_2
+        self.G = graph
         
-    def step(self, A, o, threshold_1, threshold_2):
-        alive_neighbours = A.dot(o)
+    def step(self, o):
+        opinionated_neighbours = self.A.dot(o)
 
         # above threshold_max opinion formation
-        influence_negative = 1 * np.invert(alive_neighbours >= threshold_2)
+        influence_negative = 1 * np.invert(opinionated_neighbours >= self.n_d)
         new_opinion = np.minimum(o, influence_negative)
 
         # above threshold_min opinion formation
-        influence_positive = 1 * np.all([alive_neighbours >= threshold_1, alive_neighbours < threshold_2], axis=0)
-        opinion = np.maximum(new_opinion, influence_positive)        
+        influence_positive = 1 * np.all([opinionated_neighbours >= self.n_b, opinionated_neighbours < self.n_d], axis=0)
+        resulted_opinion = np.maximum(new_opinion, influence_positive)        
 
-        return opinion
+        return resulted_opinion
 
-    def iteration(self, A, v, threshold_1, threshold_2, number_steps):
-        for i in range(0,number_steps):
-            v_new = self.step(A, v,threshold_1, threshold_2)
+    def run(self, v, number_steps):
+        opinions = np.empty((number_steps, v.shape[0]), dtype=int)
+        opinions[0, :] = v
+
+        for i in range(1, number_steps):
+            v_new = self.step(v)
             v = v_new
-            nx.draw(G, node_color = colors(v_new), with_labels=True, font_weight='bold')
-            plt.show()  
+            opinions[i, :] = v_new
+        return opinions
+
+    def draw_snapshoot(self, v):
+        nx.draw(self.G, node_color = self.colors(v), with_labels=True, font_weight='bold')
+        plt.show()          
 
     def colors(self, o):
         result = []
