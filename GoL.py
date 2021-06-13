@@ -4,11 +4,11 @@ import matplotlib.pyplot as plt
 
 class GoL:
     
-    def __init__(self, adj_matrix = None, graph = None, threshold_1=2, threshold_2=4):        
-        self.A = adj_matrix
+    def __init__(self, graph = None, threshold_1=2, threshold_2=4):        
         self.n_b = threshold_1
         self.n_d = threshold_2
         self.G = graph
+        self.A = nx.adjacency_matrix(self.G)
         
     def step(self, o):
         opinionated_neighbours = self.A.dot(o)

@@ -14,7 +14,7 @@ class TestGoL(unittest.TestCase):
         self.threshold_1 = 2
         self.threshold_2 = 3
         
-        self.game = GoL(self.A, self.G, self.threshold_1, self.threshold_2)
+        self.game = GoL(self.G, self.threshold_1, self.threshold_2)
 
     def test_steps(self):            
         self.assertEqual(self.game.step([1,1,0,0,0]).tolist(), [1,1,1,0,0])
