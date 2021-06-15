@@ -49,13 +49,17 @@ class GoL:
         return result
 
     def animate(self, frame, opinions, positions):
-        nx.draw(self.G, positions, node_color = self.colors(opinions[frame,:]), with_labels=True, font_weight='bold')
+        nx.draw(self.G, positions, node_color = self.colors(opinions[frame,:]), with_labels = False, node_size = 36)
 
     def animation(self, figure, opinions):
         frame_list = opinions.shape[0]
         positions = nx.spring_layout(self.G)
         ani = animation.FuncAnimation(figure, self.animate, frames = frame_list, fargs=(opinions, positions), interval=1000, blit=False, repeat = False)
         plt.show()
+
+    def popularity(self, opinions):
+        popularity = np.sum(opinions, axis = 1) 
+        return popularity 
 
     # # Plotting information spreading on networks
     # def visualise_simulations(self, opinions):
