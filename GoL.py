@@ -1,6 +1,7 @@
 import numpy as np
 import networkx as nx
 import matplotlib.pyplot as plt
+from matplotlib import animation
 
 class GoL:
     
@@ -33,8 +34,9 @@ class GoL:
             opinions[i, :] = v_new
         return opinions
 
-    def draw_snapshoot(self, v):
-        nx.draw(self.G, node_color = self.colors(v), with_labels=True, font_weight='bold')
+    def draw_snapshoot(self, positions, v):
+        # positions = nx.spring_layout(self.G)
+        nx.draw(self.G, positions, node_color = self.colors(v), with_labels=True, font_weight='bold')
         plt.show()          
 
     def colors(self, o):
@@ -44,4 +46,20 @@ class GoL:
                 result.append('red')
             else:
                 result.append('blue')    
-        return result             
+        return result
+
+    def animate(self, frame, opinions, positions):
+        nx.draw(self.G, positions, node_color = self.colors(opinions[frame,:]), with_labels=True, font_weight='bold')
+
+    def animation(self, figure, opinions):
+        frame_list = opinions.shape[0]
+        positions = nx.spring_layout(self.G)
+        ani = animation.FuncAnimation(figure, self.animate, frames = frame_list, fargs=(opinions, positions), interval=1000, blit=False, repeat = False)
+        plt.show()
+
+    # # Plotting information spreading on networks
+    # def visualise_simulations(self, opinions):
+    #     positions = nx.spring_layout(self.G)
+
+    #     for frame in range(opinions.shape[0]):
+    #         self.draw_snapshoot(positions, opinions[frame,:])                   
