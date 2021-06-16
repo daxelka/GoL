@@ -17,22 +17,33 @@ class GoL:
         return degree
 
     def step(self, o):
+        # Calculate the percentage of opinionated neihbours
         opinionated_neighbours = self.A.dot(o)
         opinionated_rate = np.divide(opinionated_neighbours, self.degree())
 
-        # above threshold_max opinion formation. Negative influence
-        influence_negative = 1 * np.invert(opinionated_rate >= self.n_d)
-        opinion_updated1 = np.minimum(o, influence_negative)
+        # Find those who loose interest due to the opinion overpopularity among their neihbours
+        influence_overpopulation = 1 * np.invert(opinionated_rate >= self.n_d)
+        o_updated_1 = np.minimum(o, influence_overpopulation)
+        mask_1 = 1 * opinionated_rate >= self.n_d
 
-        # # Loose interest if there is too little who shared this opinion around
-        # influence_starvation = 1 * np.invert(opinionated_rate <= self.n_s)
-        # opinion_updated2 = np.minimum(o, influence_starvation)
+        # Find those who loose interest if there is too little who shared this opinion around
+        influence_starvation = 1 * np.invert(opinionated_rate <= self.n_s)
+        o_updated_2 = np.minimum(o, influence_starvation)
+        mask_2 = 1 * opinionated_rate <= self.n_s
 
-        # above threshold_min opinion formation. Positive influence
-        influence_positive = 1 * np.all([opinionated_rate >= self.n_b, opinionated_rate < self.n_d], axis=0)
-        resulted_opinion = np.maximum(opinion_updated1, influence_positive)
+        # Find those who newly abobt opinion
+        influence_adoption = 1 * np.all([opinionated_rate >= self.n_b, opinionated_rate < self.n_d], axis=0)
+        o_updated_3 = np.maximum(o, influence_adoption)
+        mask_3 = influence_adoption
 
-        # resulted_opinion = np.multiply(o,mask_1) + np.multiply(o, mask_2)
+        # Get those who stay unchanged
+        mask_unchanged = 1 * np.invert(list(map(bool, mask_1 + mask_2 + mask_3)))
+
+        # Check that every node was updated and only once
+        assert (mask_1+mask_2+mask_3+mask_unchanged == np.ones((self.A.shape[0]), dtype = int)).all(),"Either not all nodes updated or some updated several times"
+        assert (np.all(mask_1+mask_2+mask_3+mask_unchanged) <=1), "Some nodes were updated several times"
+        # Get resulted opinion
+        resulted_opinion = np.multiply(o_updated_1,mask_1) + np.multiply(o_updated_2, mask_2) + np.multiply(o_updated_3,mask_3) + np.multiply(o, mask_unchanged)
 
         return resulted_opinion
 
