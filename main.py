@@ -2,17 +2,17 @@ import networkx as nx
 import numpy as np
 import matplotlib.pyplot as plt
 from GoL import GoL
-# import graph_tools
 
 # Game initialisation
 network_size  = 100
-G = nx.watts_strogatz_graph(n=network_size, k=10, p=0.7) # p=1 -> all-to-all connectivity
+G = nx.watts_strogatz_graph(n=network_size, k=10, p=0.5) # p=1 -> all-to-all connectivity
 A = nx.adjacency_matrix(G)
 # print(type(A))
-threshold_1 = 3
-threshold_2 = 7
+threshold_birth = 0.4
+threshold_overpopulation = 0.7
+threshold_starvation = 0.2
 
-game = GoL(G, threshold_1, threshold_2)
+game = GoL(G, threshold_birth, threshold_overpopulation, threshold_starvation)
 
 # Initial opinion distribution across network
 def randonly_seeded_opinion(number_opiniated, network_size):
@@ -20,7 +20,7 @@ def randonly_seeded_opinion(number_opiniated, network_size):
     neutral = np.zeros((network_size - number_opiniated,), dtype=int)
     return np.random.permutation(np.concatenate((opiniated, neutral), axis=0))
 
-number_opiniated = 5
+number_opiniated = 30
 seed = randonly_seeded_opinion(number_opiniated, network_size)
 
 # Game iteration
@@ -30,7 +30,7 @@ opinions = game.run(seed, number_steps)
 popularity = game.popularity(opinions)
 print(popularity)
 plt.plot(range(opinions.shape[0]), popularity)
-plt.show() 
+plt.show()
 # print(opinions)
 
 # Drawing results
@@ -42,4 +42,4 @@ plt.axis('off')
 
 game.animation(fig, opinions)
 # game.visualise_simulations(opinions)
- 
+
