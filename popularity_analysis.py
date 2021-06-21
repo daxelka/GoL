@@ -5,25 +5,25 @@ from GoL import GoL
 
 # number_experiments = 20
 # for i in range(number_experiments):
-# 	filename = 'WS_DF_'+str(i)
-# 	infile = open(filenaactactaaame,'rb')
-# 	new_dict = pickle.load(infile)
-# 	infile.close()
+#   filename = 'WS_DF_'+str(i)
+#   infile = open(filenaactactaaame,'rb')
+#   new_dict = pickle.load(infile)
+#   infile.close()
 
 
-WSDF0 = np.load('./results/ER_DF/LIC/ER_DF_17')
-WSDF1 = np.load('./results/ER_DF/LIC/ER_DF_16')
-WSDF2 = np.load('./results/ER_DF/LIC/ER_DF_15')
+WSDF0 = np.load('FB_18')
+WSDF1 = np.load('FB_19')
+WSDF2 = np.load('FB_17')
 
 plt.plot(range(WSDF0['opinions'].shape[0]), WSDF0['popularity'], marker='o', color="blue", alpha=0.3)
-plt.plot(range(WSDF1['opinions'].shape[0]), WSDF1['popularity'], marker='o', color="blue", alpha=0.3)
+plt.plot(range(WSDF1['opinions'].shape[0]), WSDF1['popularity'], marker='o', color="orange", alpha=0.3)
 plt.plot(range(WSDF2['opinions'].shape[0]), WSDF2['popularity'], marker='o', color="green", alpha=0.3)
 
 plt.show()
 
-# WSDF0.close()
+WSDF0.close()
 WSDF1.close()
-# WSDF2.close()
+WSDF2.close()
 
 # WSDF1 = np.load('FB_0')
 # rating = np.sum(WSDF1['opinions'][-10:-1,:], axis =0)*(-1)

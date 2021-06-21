@@ -29,7 +29,7 @@ class GoL:
         # Find those who loose interest if there is too little who shared this opinion around
         influence_starvation = 1 * np.invert(opinionated_rate <= self.n_s)
         o_updated_2 = np.minimum(o, influence_starvation)
-        mask_2 = 1 * opinionated_rate <= self.n_s
+        mask_2 = 1 * opinionated_rate < self.n_s
 
         # Find those who newly abobt opinion
         influence_adoption = 1 * np.all([opinionated_rate >= self.n_b, opinionated_rate < self.n_d], axis=0)
