@@ -29,7 +29,7 @@ class GoL:
         # Find those who loose interest if there is too little who shared this opinion around
         influence_starvation = 1 * np.invert(opinionated_rate <= self.n_s)
         o_updated_2 = np.minimum(o, influence_starvation)
-        mask_2 = 1 * opinionated_rate < self.n_s
+        mask_2 = 1 * opinionated_rate <= self.n_s
 
         # Find those who newly abobt opinion
         influence_adoption = 1 * np.all([opinionated_rate >= self.n_b, opinionated_rate < self.n_d], axis=0)
@@ -48,6 +48,28 @@ class GoL:
 
         return resulted_opinion
 
+    def step_loops(self, o):
+        resulted_opinion = np.empty(o.shape, dtype=int)
+
+        # Calculate the percentage of opinionated neighbours
+        opinionated_neighbours = self.A.dot(o)
+        opinionated_rate = np.divide(opinionated_neighbours, self.degree())
+
+        for idx, val in enumerate(o):
+            if val ==1:
+                if opinionated_rate[idx] >= self.n_d or opinionated_rate[idx] <= self.n_s:
+                    resulted_opinion[idx] = 0 
+                else:
+                    resulted_opinion[idx] = 1
+
+            if val ==0:
+                if opinionated_rate[idx] >= self.n_b and opinionated_rate[idx]< self.n_d:
+                    resulted_opinion[idx] = 1 
+                else:
+                    resulted_opinion[idx] = 0               
+
+        return resulted_opinion
+
     def run(self, v, number_steps):
         opinions = np.empty((number_steps, v.shape[0]), dtype=int)
         opinions[0, :] = v
@@ -56,7 +78,7 @@ class GoL:
             v_new = self.step(v)
             v = v_new
             opinions[i, :] = v_new
-        return opinions
+        return opinions    
 
     def draw_snapshoot(self, positions, o):
         positions = nx.spring_layout(self.G)
