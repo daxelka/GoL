@@ -30,7 +30,7 @@ import graph_tools as gt
 network_size  = 10000
 print('creating network...')
 G = nx.watts_strogatz_graph(n=network_size, k=17, p=0.7) # p=1 -> all-to-all connectivity
-# G = nx.erdos_renyi_graph(n=network_size, p=0.15)#
+# G = nx.erdos_renyi_graph(n=network_size, p=0.0016)#
 # A = nx.adjacency_matrix(G)
 print('network created')
 
@@ -42,6 +42,8 @@ avg_deg = float(2*G.number_of_edges()) / float(G.number_of_nodes())
 print("Nodes: ", G.number_of_nodes())
 print("Edges: ", G.number_of_edges())
 print("Average degree: ", avg_deg)
+# print("Clustering coefficient", nx.average_clustering(G))
+# print("Average shortest path length", nx.average_shortest_path_length(G))
 
 threshold_birth = 0.25
 threshold_overpopulation = 0.85
