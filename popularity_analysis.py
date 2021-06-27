@@ -11,9 +11,9 @@ from GoL import GoL
 #   infile.close()
 
 
-WSDF0 = np.load('FB_18')
-WSDF1 = np.load('FB_19')
-WSDF2 = np.load('FB_17')
+WSDF0 = np.load('./results/GoL/WS_bitmap_k0p5_seed0p2/i37')
+WSDF1 = np.load('./results/GoL/WS_bitmap_k0p5_seed0p2/i38')
+WSDF2 = np.load('./results/GoL/WS_bitmap_k0p5_seed0p2/i39')
 
 plt.plot(range(WSDF0['opinions'].shape[0]), WSDF0['popularity'], marker='o', color="blue", alpha=0.3)
 plt.plot(range(WSDF1['opinions'].shape[0]), WSDF1['popularity'], marker='o', color="orange", alpha=0.3)

@@ -11,6 +11,7 @@ class GoL:
         self.n_s = threshold_starvation
         self.G = graph
         self.A = nx.adjacency_matrix(self.G)
+        self.nodes_number = self.G.number_of_nodes()
 
     def degree(self):
         degree = self.A.dot(np.ones((self.A.shape[0]), dtype = int))
@@ -42,7 +43,7 @@ class GoL:
         # Check that every node was updated and only once
         assert (mask_1+mask_2+mask_3+mask_unchanged == np.ones((self.A.shape[0]), dtype = int)).all(),"Either not all nodes updated or some updated several times"
         assert (np.all(mask_1+mask_2+mask_3+mask_unchanged) <=1), "Some nodes were updated several times"
-        
+
         # Calculate resulted opinion
         resulted_opinion = np.multiply(o_updated_1,mask_1) + np.multiply(o_updated_2, mask_2) + np.multiply(o_updated_3,mask_3) + np.multiply(o, mask_unchanged)
 
@@ -58,15 +59,15 @@ class GoL:
         for idx, val in enumerate(o):
             if val ==1:
                 if opinionated_rate[idx] >= self.n_d or opinionated_rate[idx] <= self.n_s:
-                    resulted_opinion[idx] = 0 
+                    resulted_opinion[idx] = 0
                 else:
                     resulted_opinion[idx] = 1
 
             if val ==0:
                 if opinionated_rate[idx] >= self.n_b and opinionated_rate[idx]< self.n_d:
-                    resulted_opinion[idx] = 1 
+                    resulted_opinion[idx] = 1
                 else:
-                    resulted_opinion[idx] = 0               
+                    resulted_opinion[idx] = 0
 
         return resulted_opinion
 
@@ -78,7 +79,7 @@ class GoL:
             v_new = self.step(v)
             v = v_new
             opinions[i, :] = v_new
-        return opinions    
+        return opinions
 
     def draw_snapshoot(self, positions, o):
         positions = nx.spring_layout(self.G)
@@ -96,7 +97,7 @@ class GoL:
 
     def animate(self, frame, opinions, positions):
             # nx.draw(self.G, positions, node_color = self.colors(opinions[frame,:]), with_labels = False, node_size = 36)
-        nx.draw_circular(self.G, node_color = self.colors(opinions[frame,:]), with_labels = False, node_size = 36)    
+        nx.draw_circular(self.G, node_color = self.colors(opinions[frame,:]), with_labels = False, node_size = 36)
 
     def animation(self, figure, opinions):
         frame_list = opinions.shape[0]
@@ -105,7 +106,7 @@ class GoL:
         plt.show()
 
     def popularity(self, opinions):
-        popularity = np.sum(opinions, axis = 1)
+        popularity = np.sum(opinions, axis = 1) / self.nodes_number
         return popularity
 
     def unaffected_nodes(self,opinions):
@@ -120,9 +121,9 @@ class GoL:
     def unaffected_dynamics(self, opinions):
         nodes_unchanged = []
         for i in range(opinions.shape[0]):
-            nodes_unchanged.append(self.unaffected_nodes(opinions[0:i+2,:])) 
-        return nodes_unchanged      
-            
+            nodes_unchanged.append(self.unaffected_nodes(opinions[0:i+2,:]))
+        return nodes_unchanged
+
 
     # # Plotting information spreading on networks
     # def visualise_simulations(self, opinions):
